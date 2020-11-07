@@ -15,6 +15,8 @@ cc_library(
     name = "process-tools",
     srcs = ["process-tools.cc"] + select({
         "//src/conditions:darwin": ["process-tools-darwin.cc"],
+        # TODO: Does this have any adverse effects?
+        "//src/conditions:illumos": [],
         "//conditions:default": ["process-tools-linux.cc"],
     }),
     hdrs = ["process-tools.h"],
@@ -72,6 +74,7 @@ cc_binary(
         "//src/conditions:darwin": ["dummy-sandbox.c"],
         "//src/conditions:freebsd": ["dummy-sandbox.c"],
         "//src/conditions:openbsd": ["dummy-sandbox.c"],
+        "//src/conditions:illumos": ["dummy-sandbox.c"],
         "//src/conditions:windows": ["dummy-sandbox.c"],
         "//conditions:default": [
             "linux-sandbox.cc",
@@ -86,6 +89,7 @@ cc_binary(
         "//src/conditions:darwin": [],
         "//src/conditions:freebsd": [],
         "//src/conditions:openbsd": [],
+        "//src/conditions:illumos": [],
         "//src/conditions:windows": [],
         "//conditions:default": [
             "-lm",
@@ -96,6 +100,7 @@ cc_binary(
         "//src/conditions:darwin": [],
         "//src/conditions:freebsd": [],
         "//src/conditions:openbsd": [],
+        "//src/conditions:illumos": [],
         "//src/conditions:windows": [],
         "//conditions:default": [
             ":logging",

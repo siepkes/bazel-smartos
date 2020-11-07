@@ -37,7 +37,7 @@ namespace blaze_jni {
 #define CHECK_EQ(a, b) CHECK((a) == (b))
 #define CHECK_NEQ(a, b) CHECK((a) != (b))
 
-#if defined(__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__)
+#if defined(__APPLE__) || defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__illumos__)
 // stat64 is deprecated on OS X/BSD.
 typedef struct stat portable_stat_struct;
 #define portable_stat ::stat

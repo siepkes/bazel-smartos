@@ -20,12 +20,16 @@ DIST_DEPS = {
     #
     ########################################
     "platforms": {
-        "archive": "platforms-0.0.4.tar.gz",
-        "sha256": "079945598e4b6cc075846f7fd6a9d0857c33a7afc0de868c2ccb96405225135d",
+        "archive": "e2b0fddbd5f841432740a0029751168c054db622.zip",
+        "sha256": "7c6d68ce528ed7d409fe20e1674767bac6d192bd486281d91af4e7ef3a233280",
+        "strip_prefix": "platforms-e2b0fddbd5f841432740a0029751168c054db622",
         "urls": [
-            "https://mirror.bazel.build/github.com/bazelbuild/platforms/releases/download/0.0.4/platforms-0.0.4.tar.gz",
-            "https://github.com/bazelbuild/platforms/releases/download/0.0.4/platforms-0.0.4.tar.gz",
+            "https://github.com/siepkes/platforms/archive/e2b0fddbd5f841432740a0029751168c054db622.zip",
         ],
+        #"patch_args": ["-p1"],
+        #"patches": [
+        #    "//third_party:platforms/illumos-0.0.4.0.patch",
+        #],
         "used_in": [
             "additional_distfiles",
             "test_WORKSPACE_files",
@@ -47,12 +51,12 @@ DIST_DEPS = {
     # Note: This is not in sync with src/test/java/com/google/devtools/build/lib/blackbox/framework/BlackBoxTestEnvironment.java.
     #       Perhaps it should be.
     "rules_cc": {
-        "archive": "b1c40e1de81913a3c40e5948f78719c28152486d.zip",
-        "sha256": "d0c573b94a6ef20ef6ff20154a23d0efcb409fb0e1ff0979cec318dfe42f0cdd",
-        "strip_prefix": "rules_cc-b1c40e1de81913a3c40e5948f78719c28152486d",
+        "archive": "dcdade2ab0ac62b817b411827ff616454dd4f442.zip",
+        "sha256": "7c14eece2ea365f75e781a04776faab06beacb7296d18602b6230e5ff1230918",
+        "strip_prefix": "rules_cc-dcdade2ab0ac62b817b411827ff616454dd4f442",
         "urls": [
-            "https://mirror.bazel.build/github.com/bazelbuild/rules_cc/archive/b1c40e1de81913a3c40e5948f78719c28152486d.zip",
-            "https://github.com/bazelbuild/rules_cc/archive/b1c40e1de81913a3c40e5948f78719c28152486d.zip",
+            # TODO: Implement as patch instead of using a repo.
+            "https://github.com/siepkes/rules_cc/archive/dcdade2ab0ac62b817b411827ff616454dd4f442.zip",
         ],
         "used_in": [
             "additional_distfiles",
@@ -131,6 +135,7 @@ DIST_DEPS = {
         "patches": [
             "//third_party/grpc:grpc_1.41.0.patch",
             "//third_party/grpc:grpc_1.41.0.win_arm64.patch",
+            "//third_party/grpc:grpc_1.41.0.illumos.patch",
         ],
         "used_in": [
             "additional_distfiles",
@@ -168,6 +173,10 @@ DIST_DEPS = {
             "https://mirror.bazel.build/github.com/abseil/abseil-cpp/archive/refs/tags/20211102.0.tar.gz",
             "https://github.com/abseil/abseil-cpp/archive/refs/tags/20211102.0.tar.gz",
         ],
+        "patch_args": ["-p1"],
+        "patches": [
+            "//third_party:absl/illumos-20211102.0.patch",
+        ],        
         "used_in": [
             "additional_distfiles",
             "test_WORKSPACE_files",

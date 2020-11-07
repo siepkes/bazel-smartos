@@ -30,6 +30,10 @@ cc_library(
             "blaze_util_bsd.cc",
             "blaze_util_posix.cc",
         ],
+        "//src/conditions:illumos": [
+            "blaze_util_illumos.cc",
+            "blaze_util_posix.cc",
+        ],
         "//src/conditions:windows": [
             "blaze_util_windows.cc",
         ],
@@ -49,6 +53,8 @@ cc_library(
         "//src/conditions:freebsd": [
         ],
         "//src/conditions:openbsd": [
+        ],
+        "//src/conditions:illumos": [
         ],
         "//src/conditions:windows": WIN_LINK_OPTS,
         "//conditions:default": [
@@ -110,6 +116,8 @@ cc_binary(
             "-lm",
         ],
         "//src/conditions:openbsd": [
+        ],
+        "//src/conditions:illumos": [
         ],
         "//src/conditions:windows": [
         ],
