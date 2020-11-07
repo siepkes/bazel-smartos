@@ -1254,7 +1254,8 @@ static ATTRIBUTE_NORETURN void RunClientServerMode(
       // actually different because the two processes have different mount
       // tables.
       BAZEL_LOG(INFO) << "Server's cwd moved or deleted ("
-                      << server_cwd->AsPrintablePath() << ").";
+                      << server_cwd->AsPrintablePath() << ") - ("
+                      << workspace << ") Server PID: " << server->ProcessInfo().server_pid_;
       server->KillRunningServer();
     } else {
       break;

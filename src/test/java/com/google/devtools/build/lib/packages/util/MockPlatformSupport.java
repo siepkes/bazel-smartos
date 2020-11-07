@@ -88,6 +88,10 @@ public class MockPlatformSupport {
         "constraint_value(",
         "    name = 'openbsd',",
         "    constraint_setting = ':os',",
+        ")",
+        "constraint_value(",
+        "    name = 'illumos',",
+        "    constraint_setting = ':os',",
         ")");
     String basePlatform;
     if (TestConstants.LOCAL_CONFIG_PLATFORM_PATH != null) {
