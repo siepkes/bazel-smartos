@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""A Starlark cc_toolchain configuration rule for FreeBSD and OpenBSD."""
+"""A Starlark cc_toolchain configuration rule for Illumos."""
 
 load(
     "@bazel_tools//tools/cpp:cc_toolchain_config_lib.bzl",
@@ -56,22 +56,22 @@ all_link_actions = [
 
 def _impl(ctx):
     cpu = ctx.attr.cpu
-    is_bsd = cpu == "freebsd" or cpu == "openbsd"
+    is_illumos = cpu == "illumos"
     compiler = "compiler"
-    toolchain_identifier = "local_{}".format(cpu) if is_bsd else "stub_armeabi-v7a"
-    host_system_name = "local" if is_bsd else "armeabi-v7a"
-    target_system_name = "local" if is_bsd else "armeabi-v7a"
-    target_libc = "local" if is_bsd else "armeabi-v7a"
-    abi_version = "local" if is_bsd else "armeabi-v7a"
-    abi_libc_version = "local" if is_bsd else "armeabi-v7a"
+    toolchain_identifier = "local_{}".format(cpu) if is_illumos else "stub_armeabi-v7a"
+    host_system_name = "local" if is_illumos else "armeabi-v7a"
+    target_system_name = "local" if is_illumos else "armeabi-v7a"
+    target_libc = "local" if is_illumos else "armeabi-v7a"
+    abi_version = "local" if is_illumos else "armeabi-v7a"
+    abi_libc_version = "local" if is_illumos else "armeabi-v7a"
 
     objcopy_embed_data_action = action_config(
         action_name = "objcopy_embed_data",
         enabled = True,
-        tools = [tool(path = "/usr/bin/objcopy")],
+        tools = [tool(path = "/opt/local/bin/objcopy")],
     )
 
-    action_configs = [objcopy_embed_data_action] if is_bsd else []
+    action_configs = [objcopy_embed_data_action] if is_illumos else []
 
     default_link_flags_feature = feature(
         name = "default_link_flags",
@@ -82,18 +82,36 @@ def _impl(ctx):
                 flag_groups = [
                     flag_group(
                         flags = [
+                            # gcc_s is here because it needs to be pulled in _before_ libc gets pulled in. Libraries
+                            # like libxnet pull in libc so therefor we need to explicitly put libgcc_s before them.
+                            # If we don't we run in to the problem that GCC's exception support (in libgcc_s) gets overriden
+                            # by Illumos' libc exception support (in libc). This leads to the situation where exceptions
+                            # don't work for a GCC compiled application. Applications will simply terminate when an 
+                            # exception is thrown. For more info see:
+                            # - https://paulbeachsblog.blogspot.com/2008/03/exceptions-gcc-and-solaris-10-amd-64bit.html
+                            # - https://stackoverflow.com/questions/27490165/sun-studio-linking-gcc-libs-exceptions-do-not-work#
+                            # - https://blogs.datalogics.com/2013/06/26/2013-june-dle-intel-solaris-64-mystery/
+                            "-lgcc_s",
+                            "-lxnet",
+                            "-lsocket",
+                            "-lnsl",
+                            # Needed for 'proc_arg_psinfo'.
+                            "-lproc",
                             "-lstdc++",
-                            "-Wl,-z,relro,-z,now",
-                            "-no-canonical-prefixes",
+                            # Create position independent code.
+                            "-fpic",
+                            # Make the Illumos linker behave less strict. By default it uses '-ztext'. This caused some issues
+                            # with Envoy.
+                            # TODO: This doesn't belong here. Solve this properly.
+                            "-Wl,-z,textoff",
+                            # Remove the default '-ztext' flag which conflicts with '-ztextoff'.
+                            "-mimpure-text",
+                            # Make the Illumos linker rescan the archive files that are provided to the link-edit.
+                            "-Wl,-z,rescan",
                         ],
                     ),
                 ],
-            ),
-            flag_set(
-                actions = all_link_actions,
-                flag_groups = [flag_group(flags = ["-Wl,--gc-sections"])],
-                with_features = [with_feature_set(features = ["opt"])],
-            ),
+            )
         ],
     )
 
@@ -105,8 +123,11 @@ def _impl(ctx):
                 actions = all_compile_actions,
                 flag_groups = [
                     flag_group(
-                        flags = [                       
+                        flags = [
+                            # Identify as Illumos.
+                            "-D__illumos__",                            
                             "-no-canonical-prefixes",
+                            "-fno-canonical-system-headers",
                             "-Wno-builtin-macro-redefined",
                             "-D__DATE__=\"redacted\"",
                             "-D__TIMESTAMP__=\"redacted\"",
@@ -131,7 +152,8 @@ def _impl(ctx):
                         flags = [
                             "-U_FORTIFY_SOURCE",
                             "-D_FORTIFY_SOURCE=1",
-                            "-fstack-protector",
+                            # TODO: Does Solaris support this?
+                            #"-fstack-protector",
                             "-Wall",
                             "-fno-omit-frame-pointer",
                         ],
@@ -163,7 +185,7 @@ def _impl(ctx):
                 flag_groups = [flag_group(flags = ["-std=c++0x"])],
             ),
         ],
-    )
+    )     
 
     opt_feature = feature(name = "opt")
 
@@ -197,7 +219,7 @@ def _impl(ctx):
                 ],
             ),
         ],
-    )
+    )    
 
     sysroot_feature = feature(
         name = "sysroot",
@@ -225,7 +247,7 @@ def _impl(ctx):
         ],
     )
 
-    if is_bsd:
+    if is_illumos:
         features = [
             default_compile_flags_feature,
             default_link_flags_feature,
@@ -241,24 +263,27 @@ def _impl(ctx):
     else:
         features = [supports_dynamic_linker_feature, supports_pic_feature]
 
-    if (is_bsd):
-        cxx_builtin_include_directories = ["/usr/lib/clang", "/usr/local/include", "/usr/include"]
+    if (is_illumos):
+        # Paths obtained with '/opt/local/gcc7/bin/g++ -E -x c++ - -v < /dev/null'.
+        cxx_builtin_include_directories = ["/opt/local/gcc7/include/c++", "/opt/local/gcc7/include/c++/x86_64-sun-solaris2.11", "/opt/local/gcc7/include/c++/backward", "/opt/local/gcc7/lib/gcc/x86_64-sun-solaris2.11/7.5.0/include", "/opt/local/include", "/opt/local/gcc7/include", "/opt/local/gcc7/lib/gcc/x86_64-sun-solaris2.11/7.5.0/include-fixed", "/usr/include"]
     else:
         cxx_builtin_include_directories = []
 
-    if is_bsd:
+    if is_illumos:
         tool_paths = [
-            tool_path(name = "ar", path = "/usr/bin/ar"),
+            # Illumos ar doesn't have the '-D' flag which GNU ar has.
+            tool_path(name = "ar", path = "/opt/local/bin/ar"),
             tool_path(name = "compat-ld", path = "/usr/bin/ld"),
-            tool_path(name = "cpp", path = "/usr/bin/cpp"),
+            tool_path(name = "cpp", path = "/opt/local/gcc7/bin/cpp"),
+            # Does not exist on Solaris.
             tool_path(name = "dwp", path = "/usr/bin/dwp"),
-            tool_path(name = "gcc", path = "/usr/bin/clang"),
-            tool_path(name = "gcov", path = "/usr/bin/gcov"),
+            tool_path(name = "gcc", path = "/opt/local/gcc7/bin/gcc"),
+            tool_path(name = "gcov", path = "/opt/local/gcc7/bin/gcov"),
             tool_path(name = "ld", path = "/usr/bin/ld"),
             tool_path(name = "nm", path = "/usr/bin/nm"),
-            tool_path(name = "objcopy", path = "/usr/bin/objcopy"),
-            tool_path(name = "objdump", path = "/usr/bin/objdump"),
-            tool_path(name = "strip", path = "/usr/bin/strip"),
+            tool_path(name = "objcopy", path = "/opt/local/bin/objcopy"),
+            tool_path(name = "objdump", path = "/opt/local/bin/objdump"),
+            tool_path(name = "strip", path = "/opt/local/bin/strip"),
         ]
     else:
         tool_paths = [

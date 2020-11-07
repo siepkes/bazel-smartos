@@ -160,7 +160,7 @@ distdir_tar(
         # bazelbuild/bazel-skylib
         "bazel-skylib-1.0.3.tar.gz",
         # bazelbuild/platforms
-        "platforms-0.0.4.tar.gz",
+        "e2b0fddbd5f841432740a0029751168c054db622.zip",
         # bazelbuild/rules_java
         "7cf3cefd652008d0a64a419c34c13bdca6c8f178.zip",
         # bazelbuild/rules_cc
@@ -174,7 +174,7 @@ distdir_tar(
         # protocolbuffers/protobuf
         "v3.13.0.tar.gz",
         # grpc/grpc
-        "v1.33.1.tar.gz",
+        "ab57044cd549668466f5c2167c41638e9eb45791.tar.gz",
         # c-ares/c-ares
         "e982924acee7f7313b4baa4ee5ec000c5e373c30.tar.gz",
         # protocolbuffers/upb
@@ -201,7 +201,7 @@ distdir_tar(
         # bazelbuild/bazel-skylib
         "bazel-skylib-1.0.3.tar.gz": "1c531376ac7e5a180e0237938a2536de0c54d93f5c278634818e0efc952dd56c",
         # bazelbuild/platforms
-        "platforms-0.0.4.tar.gz": "079945598e4b6cc075846f7fd6a9d0857c33a7afc0de868c2ccb96405225135d",
+        "e2b0fddbd5f841432740a0029751168c054db622.zip": "7c6d68ce528ed7d409fe20e1674767bac6d192bd486281d91af4e7ef3a233280",
         # bazelbuild/rules_java
         "7cf3cefd652008d0a64a419c34c13bdca6c8f178.zip": "bc81f1ba47ef5cc68ad32225c3d0e70b8c6f6077663835438da8d5733f917598",
         # bazelbuild/rules_cc
@@ -215,7 +215,7 @@ distdir_tar(
         # protocolbuffers/protobuf
         "v3.13.0.tar.gz": "9b4ee22c250fe31b16f1a24d61467e40780a3fbb9b91c3b65be2a376ed913a1a",
         # grpc/grpc
-        "v1.33.1.tar.gz": "58eaee5c0f1bd0b92ebe1fa0606ec8f14798500620e7444726afcaf65041cb63",
+        "ab57044cd549668466f5c2167c41638e9eb45791.tar.gz": "58eaee5c0f1bd0b92ebe1fa0606ec8f14798500620e7444726afcaf65041cb63",
         # c-ares/c-ares
         "e982924acee7f7313b4baa4ee5ec000c5e373c30.tar.gz": "e8c2751ddc70fed9dc6f999acd92e232d5846f009ee1674f8aee81f19b2b915a",
         # protocolbuffers/upb
@@ -263,9 +263,8 @@ distdir_tar(
             "https://github.com/bazelbuild/bazel-skylib/releases/download/1.0.3/bazel-skylib-1.0.3.tar.gz",
         ],
         # bazelbuild/platforms
-        "platforms-0.0.4.tar.gz": [
-            "https://mirror.bazel.build/github.com/bazelbuild/platforms/releases/download/0.0.4/platforms-0.0.4.tar.gz",
-            "https://github.com/bazelbuild/platforms/releases/download/0.0.4/platforms-0.0.4.tar.gz",
+        "e2b0fddbd5f841432740a0029751168c054db622.zip": [
+            "https://github.com/siepkes/platforms/archive/e2b0fddbd5f841432740a0029751168c054db622.zip",
         ],
         # bazelbuild/rules_java
         "7cf3cefd652008d0a64a419c34c13bdca6c8f178.zip": [
@@ -298,9 +297,8 @@ distdir_tar(
             "https://github.com/protocolbuffers/protobuf/archive/v3.13.0.tar.gz",
         ],
         # grpc/grpc
-        "v1.33.1.tar.gz": [
-            "https://mirror.bazel.build/github.com/grpc/grpc/archive/v1.33.1.tar.gz",
-            "https://github.com/grpc/grpc/archive/v1.33.1.tar.gz",
+        "ab57044cd549668466f5c2167c41638e9eb45791.tar.gz": [
+            "https://github.com/siepkes/grpc/archive/ab57044cd549668466f5c2167c41638e9eb45791.tar.gz",
         ],
         # c-ares/c-ares
         "e982924acee7f7313b4baa4ee5ec000c5e373c30.tar.gz": [
@@ -582,7 +580,7 @@ distdir_tar(
         # bazelbuild/bazel-skylib
         "bazel-skylib-1.0.3.tar.gz",
         # bazelbuild/platforms
-        "platforms-0.0.4.tar.gz",
+        "e2b0fddbd5f841432740a0029751168c054db622.zip",
         # bazelbuild/rules_java
         "7cf3cefd652008d0a64a419c34c13bdca6c8f178.zip",
         # bazelbuild/rules_cc
@@ -617,7 +615,7 @@ distdir_tar(
         # bazelbuild/bazel-skylib
         "bazel-skylib-1.0.3.tar.gz": "1c531376ac7e5a180e0237938a2536de0c54d93f5c278634818e0efc952dd56c",
         # bazelbuild/platforms
-        "platforms-0.0.4.tar.gz": "079945598e4b6cc075846f7fd6a9d0857c33a7afc0de868c2ccb96405225135d",
+        "e2b0fddbd5f841432740a0029751168c054db622.zip": "7c6d68ce528ed7d409fe20e1674767bac6d192bd486281d91af4e7ef3a233280",
         # bazelbuild/rules_java
         "7cf3cefd652008d0a64a419c34c13bdca6c8f178.zip": "bc81f1ba47ef5cc68ad32225c3d0e70b8c6f6077663835438da8d5733f917598",
         # bazelbuild/rules_cc
@@ -627,7 +625,7 @@ distdir_tar(
         # protocolbuffers/protobuf
         "v3.13.0.tar.gz": "9b4ee22c250fe31b16f1a24d61467e40780a3fbb9b91c3b65be2a376ed913a1a",
         # grpc/grpc
-        "v1.33.1.tar.gz": "58eaee5c0f1bd0b92ebe1fa0606ec8f14798500620e7444726afcaf65041cb63",
+        "ab57044cd549668466f5c2167c41638e9eb45791.tar.gz": "58eaee5c0f1bd0b92ebe1fa0606ec8f14798500620e7444726afcaf65041cb63",
         # c-ares/c-ares
         "e982924acee7f7313b4baa4ee5ec000c5e373c30.tar.gz": "e8c2751ddc70fed9dc6f999acd92e232d5846f009ee1674f8aee81f19b2b915a",
         # protocolbuffers/upb
@@ -656,9 +654,8 @@ distdir_tar(
             "https://github.com/bazelbuild/bazel-skylib/releases/download/1.0.3/bazel-skylib-1.0.3.tar.gz",
         ],
         # bazelbuild/platforms
-        "platforms-0.0.4.tar.gz": [
-            "https://mirror.bazel.build/github.com/bazelbuild/platforms/releases/download/0.0.4/platforms-0.0.4.tar.gz",
-            "https://github.com/bazelbuild/platforms/releases/download/0.0.4/platforms-0.0.4.tar.gz",
+        "e2b0fddbd5f841432740a0029751168c054db622.zip": [
+            "https://github.com/siepkes/platforms/archive/e2b0fddbd5f841432740a0029751168c054db622.zip",
         ],
         # bazelbuild/rules_java
         "7cf3cefd652008d0a64a419c34c13bdca6c8f178.zip": [
@@ -681,9 +678,8 @@ distdir_tar(
             "https://github.com/protocolbuffers/protobuf/archive/v3.13.0.tar.gz",
         ],
         # grpc/grpc
-        "v1.33.1.tar.gz": [
-            "https://mirror.bazel.build/github.com/grpc/grpc/archive/v1.33.1.tar.gz",
-            "https://github.com/grpc/grpc/archive/v1.33.1.tar.gz",
+        "ab57044cd549668466f5c2167c41638e9eb45791.tar.gz": [
+            "https://github.com/siepkes/grpc/archive/ab57044cd549668466f5c2167c41638e9eb45791.tar.gz",
         ],
         # c-ares/c-ares
         "e982924acee7f7313b4baa4ee5ec000c5e373c30.tar.gz": [
@@ -766,10 +762,11 @@ http_archive(
 
 http_archive(
     name = "platforms",
-    sha256 = "079945598e4b6cc075846f7fd6a9d0857c33a7afc0de868c2ccb96405225135d",
+    sha256 = "7c6d68ce528ed7d409fe20e1674767bac6d192bd486281d91af4e7ef3a233280",
+    strip_prefix = "platforms-e2b0fddbd5f841432740a0029751168c054db622",
     urls = [
-        "https://mirror.bazel.build/github.com/bazelbuild/platforms/releases/download/0.0.4/platforms-0.0.4.tar.gz",
-        "https://github.com/bazelbuild/platforms/releases/download/0.0.4/platforms-0.0.4.tar.gz",
+        # Based on platforms 0.0.4 release.
+        "https://github.com/siepkes/platforms/archive/e2b0fddbd5f841432740a0029751168c054db622.zip",
     ],
 )
 
@@ -1233,11 +1230,11 @@ http_archive(
     name = "com_github_grpc_grpc",
     patch_args = ["-p1"],
     patches = ["//third_party/grpc:grpc_1.33.1.patch"],
-    sha256 = "58eaee5c0f1bd0b92ebe1fa0606ec8f14798500620e7444726afcaf65041cb63",
-    strip_prefix = "grpc-1.33.1",
+    sha256 = "c3fccbff8f7c8ea8504be10e1b0f0e00df53a7bf0132bb1369151df0dd6fef17",
+    strip_prefix = "grpc-ab57044cd549668466f5c2167c41638e9eb45791",
     urls = [
-        "https://mirror.bazel.build/github.com/grpc/grpc/archive/v1.33.1.tar.gz",
-        "https://github.com/grpc/grpc/archive/v1.33.1.tar.gz",
+        # Fork with Illumos changes of v1.33.1.
+        "https://github.com/siepkes/grpc/archive/ab57044cd549668466f5c2167c41638e9eb45791.tar.gz",
     ],
 )
 

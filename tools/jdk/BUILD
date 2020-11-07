@@ -128,6 +128,12 @@ java_runtime_files(
     srcs = ["include/openbsd/jni_md.h"],
 )
 
+java_runtime_files(
+    name = "jni_md_header-illumos",
+    # OpenJDK doesn't make a distinction between Solaris and Illumos (yet).
+    srcs = ["include/solaris/jni_md.h"],
+)
+
 # The Java native interface. Depend on this package if you #include <jni.h>.
 #
 # See test_jni in third_party/bazel/src/test/shell/bazel/bazel_java_test.sh for
@@ -144,6 +150,7 @@ cc_library(
         "//src/conditions:darwin": [":jni_md_header-darwin"],
         "//src/conditions:freebsd": [":jni_md_header-freebsd"],
         "//src/conditions:openbsd": [":jni_md_header-openbsd"],
+        "//src/conditions:illumos": [":jni_md_header-illumos"],
         "//src/conditions:windows": [":jni_md_header-windows"],
         "//conditions:default": [],
     }),
@@ -155,6 +162,7 @@ cc_library(
         "//src/conditions:darwin": ["include/darwin"],
         "//src/conditions:freebsd": ["include/freebsd"],
         "//src/conditions:openbsd": ["include/openbsd"],
+        "//src/conditions:illumos": ["include/solaris"],
         "//src/conditions:windows": ["include/win32"],
         "//conditions:default": [],
     }),

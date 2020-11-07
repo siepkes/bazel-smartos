@@ -34,6 +34,9 @@
 #include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
+#if defined(__illumos__)
+#include <sys/termios.h> // TIOCGWINSZ
+#endif
 
 #include <algorithm>
 #include <cassert>
@@ -703,6 +706,9 @@ uint64_t AcquireLock(const blaze_util::Path& output_base, bool batch_mode,
   // fails to take the lock, but not parsed otherwise.
   (void) ftruncate(lockfd, 0);
   lseek(lockfd, 0, SEEK_SET);
+#if defined(__illumos__)
+// TODO: Implement for Illumos. Illumos does not support dprintf (POSIX 2008).
+#else
   // Arguably we should ensure this fits in the 4KB we lock.  In practice no one
   // will have a cwd long enough to overflow that, and nothing currently uses
   // the rest of the lock file anyway.
@@ -712,6 +718,7 @@ uint64_t AcquireLock(const blaze_util::Path& output_base, bool batch_mode,
   if (const char *tty = ttyname(STDIN_FILENO)) {  // NOLINT (single-threaded)
     dprintf(lockfd, "tty=%s\n", tty);
   }
+#endif
   blaze_lock->lockfd = lockfd;
   return wait_time;
 }
@@ -849,7 +856,9 @@ static bool UnlimitResource(const int resource, const bool allow_infinity) {
 bool UnlimitResources() {
   bool success = true;
   success &= UnlimitResource(RLIMIT_NOFILE, false);
+#if defined(RLIMIT_NPROC)
   success &= UnlimitResource(RLIMIT_NPROC, false);
+#endif
   return success;
 }
 
