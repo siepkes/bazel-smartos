@@ -385,7 +385,7 @@ def configure_unix_toolchain(repository_ctx, cpu_value, overriden_tools):
     if darwin:
         overriden_tools["gcc"] = "cc_wrapper.sh"
         overriden_tools["ar"] = "/usr/bin/libtool"
-    auto_configure_warning_maybe(repository_ctx, "CC used: " + str(cc))
+    auto_configure_warning_maybe(repository_ctx, "CC used: " + str(cc) + " CPU Value: " + str(cpu_value))
     tool_paths = _get_tool_paths(repository_ctx, overriden_tools)
     cc_toolchain_identifier = escape_string(get_env_var(
         repository_ctx,

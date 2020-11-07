@@ -166,6 +166,12 @@ config_setting(
 )
 
 config_setting(
+    name = "illumos",
+    constraint_values = ["@platforms//os:illumos"],
+    visibility = ["//visibility:public"],
+)
+
+config_setting(
     name = "windows",
     constraint_values = ["@platforms//os:windows"],
     visibility = ["//visibility:public"],
@@ -230,6 +236,14 @@ config_setting(
     name = "debian_build",
     values = {
         "define": "distribution=debian",
+    },
+    visibility = ["//visibility:public"],
+)
+
+config_setting(
+    name = "grpc_no_ares",
+    values = {
+        "define": "grpc_no_ares=true",
     },
     visibility = ["//visibility:public"],
 )
