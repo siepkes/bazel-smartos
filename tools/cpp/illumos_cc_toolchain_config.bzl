@@ -82,18 +82,9 @@ def _impl(ctx):
                 flag_groups = [
                     flag_group(
                         flags = [
-                            # gcc_s is here because it needs to be pulled in _before_ libc gets pulled in. Libraries
-                            # like libxnet pull in libc so therefor we need to explicitly put libgcc_s before them.
-                            # If we don't we run in to the problem that GCC's exception support (in libgcc_s) gets overriden
-                            # by Illumos' libc exception support (in libc). This leads to the situation where exceptions
-                            # don't work for a GCC compiled application. Applications will simply terminate when an 
-                            # exception is thrown. For more info see:
-                            # - https://paulbeachsblog.blogspot.com/2008/03/exceptions-gcc-and-solaris-10-amd-64bit.html
-                            # - https://stackoverflow.com/questions/27490165/sun-studio-linking-gcc-libs-exceptions-do-not-work#
-                            # - https://blogs.datalogics.com/2013/06/26/2013-june-dle-intel-solaris-64-mystery/
-                            "-lgcc_s",
                             "-lxnet",
                             "-lsocket",
+                            "-lsendfile",
                             "-lnsl",
                             # Needed for 'proc_arg_psinfo'.
                             "-lproc",
@@ -104,8 +95,6 @@ def _impl(ctx):
                             # with Envoy.
                             # TODO: This doesn't belong here. Solve this properly.
                             "-Wl,-z,textoff",
-                            # Remove the default '-ztext' flag which conflicts with '-ztextoff'.
-                            "-mimpure-text",
                             # Make the Illumos linker rescan the archive files that are provided to the link-edit.
                             "-Wl,-z,rescan",
                         ],
@@ -127,7 +116,6 @@ def _impl(ctx):
                             # Identify as Illumos.
                             "-D__illumos__",                            
                             "-no-canonical-prefixes",
-                            "-fno-canonical-system-headers",
                             "-Wno-builtin-macro-redefined",
                             "-D__DATE__=\"redacted\"",
                             "-D__TIMESTAMP__=\"redacted\"",
@@ -264,8 +252,8 @@ def _impl(ctx):
         features = [supports_dynamic_linker_feature, supports_pic_feature]
 
     if (is_illumos):
-        # Paths obtained with '/opt/local/gcc7/bin/g++ -E -x c++ - -v < /dev/null'.
-        cxx_builtin_include_directories = ["/opt/local/gcc7/include/c++", "/opt/local/gcc7/include/c++/x86_64-sun-solaris2.11", "/opt/local/gcc7/include/c++/backward", "/opt/local/gcc7/lib/gcc/x86_64-sun-solaris2.11/7.5.0/include", "/opt/local/include", "/opt/local/gcc7/include", "/opt/local/gcc7/lib/gcc/x86_64-sun-solaris2.11/7.5.0/include-fixed", "/usr/include"]
+        # Paths obtained with 'clang-cpp -v'.
+        cxx_builtin_include_directories = ["/usr/local/include", "/opt/local/lib/clang/12.0.1/include", "/usr/include", "/opt/local/include/c++/v1/"]
     else:
         cxx_builtin_include_directories = []
 
@@ -274,11 +262,11 @@ def _impl(ctx):
             # Illumos ar doesn't have the '-D' flag which GNU ar has.
             tool_path(name = "ar", path = "/opt/local/bin/ar"),
             tool_path(name = "compat-ld", path = "/usr/bin/ld"),
-            tool_path(name = "cpp", path = "/opt/local/gcc7/bin/cpp"),
+            tool_path(name = "cpp", path = "/opt/local/bin/clang-cpp"),
             # Does not exist on Solaris.
             tool_path(name = "dwp", path = "/usr/bin/dwp"),
-            tool_path(name = "gcc", path = "/opt/local/gcc7/bin/gcc"),
-            tool_path(name = "gcov", path = "/opt/local/gcc7/bin/gcov"),
+            tool_path(name = "gcc", path = "/opt/local/bin/clang"),
+            tool_path(name = "gcov", path = "/opt/local/bin/gcov"),
             tool_path(name = "ld", path = "/usr/bin/ld"),
             tool_path(name = "nm", path = "/usr/bin/nm"),
             tool_path(name = "objcopy", path = "/opt/local/bin/objcopy"),

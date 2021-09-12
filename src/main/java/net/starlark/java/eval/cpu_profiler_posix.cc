@@ -26,6 +26,10 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#ifdef __sun__
+#include <thread.h>
+#endif
+
 namespace cpu_profiler {
 
 // static native boolean supported();
@@ -39,6 +43,8 @@ static int fd;  // the write end of the profile event pipe
 pid_t gettid(void) {
 #ifdef __linux__
   return (pid_t)syscall(SYS_gettid);
+#elif __illumos__
+  return thr_self();
 #else  // darwin
   return (pid_t)syscall(SYS_thread_selfid);
 #endif

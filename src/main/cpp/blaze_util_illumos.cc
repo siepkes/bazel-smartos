@@ -218,14 +218,16 @@ bool VerifyServerProcess(int pid, const blaze_util::Path &output_base) {
   }
 
   string recorded_start_time;
-  bool file_present = blaze_util::ReadFile(
-      output_base.GetRelative("server/server.starttime"), &recorded_start_time);
+  blaze_util::ReadFile(output_base.GetRelative("server/server.starttime"), &recorded_start_time);
 
   return recorded_start_time == start_time;
 }
 
 void ExcludePathFromBackup(const blaze_util::Path &path) {
-  // Not supported.
+  // Not needed. This method is called so specific OS implementations can mark the supplied
+  // path as to be excluded from backups. This is for example used in the Darwin (macOS)
+  // implementation to mark certain paths as to be excluded from Apple's timemachine
+  // software.
 }
 
 int32_t GetExplicitSystemLimit(const int resource) {

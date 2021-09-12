@@ -95,6 +95,7 @@ cc_binary(
     name = "libcpu_profiler.so",
     srcs = select({
         "//src/conditions:darwin": ["cpu_profiler_posix.cc"],
+        "//src/conditions:illumos": ["cpu_profiler_posix.cc"],
         "//src/conditions:linux": ["cpu_profiler_posix.cc"],
         "//conditions:default": ["cpu_profiler_unimpl.cc"],
     }),
