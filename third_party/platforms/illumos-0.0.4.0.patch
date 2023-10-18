@@ -1,0 +1,28 @@
+From e2b0fddbd5f841432740a0029751168c054db622 Mon Sep 17 00:00:00 2001
+From: Jasper Siepkes <siepkes@serviceplanet.nl>
+Date: Sat, 12 Sep 2020 09:12:52 +0200
+Subject: [PATCH] Added Solaris / SmartOS / Illumos support.
+
+---
+ os/BUILD | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/os/BUILD b/os/BUILD
+index 53fec81..b57f988 100644
+--- a/os/BUILD
++++ b/os/BUILD
+@@ -23,6 +23,11 @@ constraint_value(
+     constraint_setting = ":os",
+ )
+ 
++constraint_value(
++    name = "illumos",
++    constraint_setting = ":os",
++)
++
+ constraint_value(
+     name = "android",
+     constraint_setting = ":os",
+-- 
+2.37.1
+

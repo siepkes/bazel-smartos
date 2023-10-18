@@ -4,6 +4,7 @@ genrule(
         "//src/conditions:darwin": ["@bazel_tools//tools/jdk:jni_md_header-darwin"],
         "//src/conditions:freebsd": ["@bazel_tools//tools/jdk:jni_md_header-freebsd"],
         "//src/conditions:openbsd": ["@bazel_tools//tools/jdk:jni_md_header-openbsd"],
+        "//src/conditions:illumos": ["@bazel_tools//tools/jdk:jni_md_header-illumos"], 
         "//src/conditions:windows": ["@bazel_tools//tools/jdk:jni_md_header-windows"],
         "//conditions:default": ["@bazel_tools//tools/jdk:jni_md_header-linux"],
     }),
@@ -39,6 +40,7 @@ filegroup(
         ],
         "//src/conditions:freebsd": ["unix_jni_bsd.cc"],
         "//src/conditions:openbsd": ["unix_jni_bsd.cc"],
+        "//src/conditions:illumos": ["unix_jni_illumos.cc"],
         "//conditions:default": ["unix_jni_linux.cc"],
     }),
 )

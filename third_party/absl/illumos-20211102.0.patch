@@ -1,0 +1,83 @@
+From 7b5818367956b15b4b8c3c9748a05e8649c6f39b Mon Sep 17 00:00:00 2001
+From: Jasper Siepkes <siepkes@serviceplanet.nl>
+Date: Sat, 16 Jul 2022 20:28:24 +0200
+Subject: [PATCH] Added SmartOS compatibility.
+
+---
+ absl/debugging/internal/vdso_support.cc       |  6 +++-
+ .../cctz/include/cctz/civil_time_detail.h     | 29 ++++++++++++-------
+ 2 files changed, 23 insertions(+), 12 deletions(-)
+
+diff --git a/absl/debugging/internal/vdso_support.cc b/absl/debugging/internal/vdso_support.cc
+index 977a9f6b..76d4253a 100644
+--- a/absl/debugging/internal/vdso_support.cc
++++ b/absl/debugging/internal/vdso_support.cc
+@@ -38,7 +38,7 @@
+ #define ABSL_HAVE_GETAUXVAL
+ #endif
+ 
+-#ifdef ABSL_HAVE_GETAUXVAL
++#if defined(ABSL_HAVE_GETAUXVAL) || defined(__sun)
+ #include <sys/auxv.h>
+ #endif
+ 
+@@ -54,6 +54,10 @@
+ using Elf64_auxv_t = Elf64_Auxinfo;
+ using Elf32_auxv_t = Elf32_Auxinfo;
+ #endif
++#if defined(__sun)
++using Elf64_auxv_t = auxv_t;
++#endif
++
+ 
+ namespace absl {
+ ABSL_NAMESPACE_BEGIN
+diff --git a/absl/time/internal/cctz/include/cctz/civil_time_detail.h b/absl/time/internal/cctz/include/cctz/civil_time_detail.h
+index 8aadde57..4800dcda 100644
+--- a/absl/time/internal/cctz/include/cctz/civil_time_detail.h
++++ b/absl/time/internal/cctz/include/cctz/civil_time_detail.h
+@@ -48,23 +48,30 @@ using diff_t = std::int_fast64_t;
+ namespace detail {
+ 
+ // Type aliases that indicate normalized argument values.
+-using month_t = std::int_fast8_t;   // [1:12]
+-using day_t = std::int_fast8_t;     // [1:31]
+-using hour_t = std::int_fast8_t;    // [0:23]
+-using minute_t = std::int_fast8_t;  // [0:59]
+-using second_t = std::int_fast8_t;  // [0:59]
++
++// ILLUMOS SPECIFIC CHANGE:
++// Fixes build failures when using '-Werror=char-subscripts'.
++//
++// std::int_fast64_t can be negative. Since it is directly used to
++// reference positions in arrays the compiler complains about it. Making
++// the types unsigned ensure they can never be negative.
++using month_t = std::uint_fast8_t;   // [1:12]
++using day_t = std::uint_fast8_t;     // [1:31]
++using hour_t = std::uint_fast8_t;    // [0:23]
++using minute_t = std::uint_fast8_t;  // [0:59]
++using second_t = std::uint_fast8_t;  // [0:59]
+ 
+ // Normalized civil-time fields: Y-M-D HH:MM:SS.
+ struct fields {
+   CONSTEXPR_M fields(year_t year, month_t month, day_t day, hour_t hour,
+                      minute_t minute, second_t second)
+       : y(year), m(month), d(day), hh(hour), mm(minute), ss(second) {}
+-  std::int_least64_t y;
+-  std::int_least8_t m;
+-  std::int_least8_t d;
+-  std::int_least8_t hh;
+-  std::int_least8_t mm;
+-  std::int_least8_t ss;
++  std::uint_least8_t y;
++  std::uint_least8_t m;
++  std::uint_least8_t d;
++  std::uint_least8_t hh;
++  std::uint_least8_t mm;
++  std::uint_least8_t ss;
+ };
+ 
+ struct second_tag {};
+-- 
+2.36.1
+
