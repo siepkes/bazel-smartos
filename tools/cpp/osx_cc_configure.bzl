@@ -139,6 +139,38 @@ def _compile_cc_file(repository_ctx, src_name, out_name, timeout):
     else:
         _compile_cc_file_single_arch(repository_ctx, src_name, out_name, timeout)
 
+def configure_illumos_toolchain(repository_ctx, cpu_value, overriden_tools):
+    """Configure C++ toolchain on Illumos.
+
+    Args:
+      repository_ctx: The repository context.
+      overriden_tools: dictionary of overriden tools.
+    """
+    paths = resolve_labels(repository_ctx, [
+        "@bazel_tools//tools/cpp:armeabi_cc_toolchain_config.bzl",
+        "@bazel_tools//tools/cpp:osx_cc_wrapper.sh.tpl",
+        "@bazel_tools//tools/objc:libtool.sh",
+        "@bazel_tools//tools/objc:libtool_check_unique.cc",
+        "@bazel_tools//tools/objc:make_hashed_objlist.py",
+        "@bazel_tools//tools/objc:xcrunwrapper.sh",
+        "@bazel_tools//tools/osx/crosstool:BUILD.tpl",
+        "@bazel_tools//tools/osx/crosstool:cc_toolchain_config.bzl",
+        "@bazel_tools//tools/osx/crosstool:wrapped_clang.cc",
+        "@bazel_tools//tools/osx:xcode_locator.m",
+    ])
+
+    env = repository_ctx.os.environ
+    should_use_xcode = "BAZEL_USE_XCODE_TOOLCHAIN" in env and env["BAZEL_USE_XCODE_TOOLCHAIN"] == "1"
+    xcode_toolchains = []
+
+    # Make the following logic in sync with //tools/cpp:cc_configure.bzl#cc_autoconf_toolchains_impl
+    (xcode_toolchains, xcodeloc_err) = run_xcode_locator(
+        repository_ctx,
+        paths["@bazel_tools//tools/osx:xcode_locator.m"],
+    )
+
+    configure_unix_toolchain(repository_ctx, cpu_value, overriden_tools = overriden_tools)
+
 def configure_osx_toolchain(repository_ctx, cpu_value, overriden_tools):
     """Configure C++ toolchain on macOS.
 
