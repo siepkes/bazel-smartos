@@ -13,6 +13,12 @@ config_setting(
 )
 
 config_setting(
+    name = "illumos",
+    constraint_values = ["@platforms//os:illumos"],
+    visibility = ["//visibility:public"],
+)
+
+config_setting(
     name = "darwin",
     constraint_values = ["@platforms//os:macos"],
     visibility = ["//visibility:public"],
