@@ -25,11 +25,12 @@ DIST_DEPS = {
     #
     ########################################
     "platforms": {
-        "archive": "platforms-0.0.5.tar.gz",
-        "sha256": "379113459b0feaf6bfbb584a91874c065078aa673222846ac765f86661c27407",
+        "archive": "b2adb960759a3dc93505953357109d78503b0bd9.zip",
+        "sha256": "dbb1e347cf7016ef8b1fa92999d45711c806c1d491510555cb2b82bddbf0b356",
+        "strip_prefix": "platforms-b2adb960759a3dc93505953357109d78503b0bd9",
         "urls": [
-            "https://mirror.bazel.build/github.com/bazelbuild/platforms/releases/download/0.0.5/platforms-0.0.5.tar.gz",
-            "https://github.com/bazelbuild/platforms/releases/download/0.0.5/platforms-0.0.5.tar.gz",
+            # Commit 'b2adb960759a3dc93505953357109d78503b0bd9' is a fork of 0.0.5 with 'illumos' added as OS.
+            "https://github.com/siepkes/platforms/archive/b2adb960759a3dc93505953357109d78503b0bd9.zip",
         ],
         "used_in": [
             "additional_distfiles",
@@ -52,9 +53,13 @@ DIST_DEPS = {
     # Used in src/main/java/com/google/devtools/build/lib/bazel/rules/java/jdk.WORKSPACE.
     # Used in src/test/java/com/google/devtools/build/lib/blackbox/framework/blackbox.WORKSAPCE
     "rules_cc": {
-        "archive": "rules_cc-0.0.2.tar.gz",
-        "sha256": "58bff40957ace85c2de21ebfc72e53ed3a0d33af8cc20abd0ceec55c63be7de2",
-        "urls": ["https://github.com/bazelbuild/rules_cc/releases/download/0.0.2/rules_cc-0.0.2.tar.gz"],
+        "archive": "dcdade2ab0ac62b817b411827ff616454dd4f442.zip",
+        "sha256": "7c14eece2ea365f75e781a04776faab06beacb7296d18602b6230e5ff1230918",
+        "strip_prefix": "rules_cc-dcdade2ab0ac62b817b411827ff616454dd4f442",
+        "urls": [
+            # TODO: Implement as patch instead of using a repo.
+            "https://github.com/siepkes/rules_cc/archive/dcdade2ab0ac62b817b411827ff616454dd4f442.zip",
+        ],
         "used_in": [
             "additional_distfiles",
             "test_WORKSPACE_files",
@@ -122,7 +127,9 @@ DIST_DEPS = {
         "patch_args": ["-p1"],
         "patches": [
             "//third_party/grpc:grpc_1.47.0.patch",
-            "//third_party/grpc:grpc_1.47.0.win_arm64.patch",
+            # Conflicts with out illumos changes (cares build modifications).
+            #"//third_party/grpc:grpc_1.47.0.win_arm64.patch",
+            "//third_party/grpc:grpc_1.47.0.illumos.patch",
         ],
         "used_in": [
             "additional_distfiles",
@@ -234,6 +241,10 @@ DIST_DEPS = {
         "urls": [
             "https://mirror.bazel.build/github.com/abseil/abseil-cpp/archive/refs/tags/20211102.0.tar.gz",
             "https://github.com/abseil/abseil-cpp/archive/refs/tags/20211102.0.tar.gz",
+        ],
+        "patch_args": ["-p1"],
+        "patches": [
+            "//third_party:absl/illumos-20211102.0.patch",
         ],
         "used_in": [
             "additional_distfiles",
