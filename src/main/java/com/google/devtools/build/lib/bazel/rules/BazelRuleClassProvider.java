@@ -548,7 +548,9 @@ public class BazelRuleClassProvider {
     // TODO(ulfjack): The default PATH should be set from the exec platform, which may be different
     // from the local machine. For now, this can be overridden with --action_env=PATH=<value>, so
     // at least there's a workaround.
-    if (os != OS.WINDOWS) {
+    if (os == OS.ILLUMOS) {
+      return "/usr/local/sbin:/usr/local/bin:/opt/local/sbin:/opt/local/bin:/usr/sbin:/usr/bin:/sbin";
+    } else if (os != OS.WINDOWS) {
       // The default used to be "/bin:/usr/bin". However, on Mac the Python 3 interpreter, if it is
       // installed at all, tends to be under /usr/local/bin. The autodetecting Python toolchain
       // searches PATH for "python3", so if we don't include this directory then we can't run PY3
@@ -557,7 +559,7 @@ public class BazelRuleClassProvider {
       // Note that --action_env does not propagate to the host config, so it is not a viable
       // workaround when a genrule is itself built in the host config (e.g. nested genrules). See
       // #8536.
-      return "/bin:/usr/bin:/usr/local/bin";
+      return "/bin:/usr/bin:/usr/local/bin:/opt/local/bin";
     }
 
     String newPath = "";

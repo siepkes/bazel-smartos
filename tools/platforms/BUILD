@@ -89,6 +89,11 @@ alias(
 )
 
 alias(
+    name = "illumos",
+    actual = "@platforms//os:illumos",
+)
+
+alias(
     name = "android",
     actual = "@platforms//os:android",
 )
@@ -127,6 +132,7 @@ platform(
         "@platforms//os:osx",
         "@platforms//os:freebsd",
         "@platforms//os:openbsd",
+        "@platforms//os:illumos",
         "@platforms//os:linux",
         "@platforms//os:windows",
     ],
@@ -150,6 +156,7 @@ platform(
         "@platforms//os:osx",
         "@platforms//os:freebsd",
         "@platforms//os:openbsd",
+        "@platforms//os:illumos",
         "@platforms//os:linux",
         "@platforms//os:windows",
     ],

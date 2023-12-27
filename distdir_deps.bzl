@@ -25,11 +25,12 @@ DIST_DEPS = {
     #
     ########################################
     "platforms": {
-        "archive": "platforms-0.0.7.tar.gz",
-        "sha256": "3a561c99e7bdbe9173aa653fd579fe849f1d8d67395780ab4770b1f381431d51",
+        "archive": "d64c19586387033dd0c2ba3a3f36e47406e8cecc.zip",
+        "sha256": "1cbfc5fce669885d0ea6c5c92858eef7bfcdf8da22fee5dfd9b318f843f89fc6",
+        "strip_prefix": "platforms-d64c19586387033dd0c2ba3a3f36e47406e8cecc",
         "urls": [
-            "https://mirror.bazel.build/github.com/bazelbuild/platforms/releases/download/0.0.7/platforms-0.0.7.tar.gz",
-            "https://github.com/bazelbuild/platforms/releases/download/0.0.7/platforms-0.0.7.tar.gz",
+            # Commit 'd64c19586387033dd0c2ba3a3f36e47406e8cecc' is a fork of 0.0.7 with 'illumos' added as OS.
+            "https://github.com/siepkes/platforms/archive/d64c19586387033dd0c2ba3a3f36e47406e8cecc.zip",
         ],
         "used_in": [
             "additional_distfiles",
@@ -53,9 +54,13 @@ DIST_DEPS = {
     # Used in src/main/java/com/google/devtools/build/lib/bazel/rules/java/jdk.WORKSPACE.
     # Used in src/test/java/com/google/devtools/build/lib/blackbox/framework/blackbox.WORKSAPCE
     "rules_cc": {
-        "archive": "rules_cc-0.0.2.tar.gz",
-        "sha256": "58bff40957ace85c2de21ebfc72e53ed3a0d33af8cc20abd0ceec55c63be7de2",
-        "urls": ["https://github.com/bazelbuild/rules_cc/releases/download/0.0.2/rules_cc-0.0.2.tar.gz"],
+        "archive": "dcdade2ab0ac62b817b411827ff616454dd4f442.zip",
+        "sha256": "7c14eece2ea365f75e781a04776faab06beacb7296d18602b6230e5ff1230918",
+        "strip_prefix": "rules_cc-dcdade2ab0ac62b817b411827ff616454dd4f442",
+        "urls": [
+            # TODO: Implement as patch instead of using a repo.
+            "https://github.com/siepkes/rules_cc/archive/dcdade2ab0ac62b817b411827ff616454dd4f442.zip",
+        ],
         "used_in": [
             "additional_distfiles",
             "test_WORKSPACE_files",
@@ -122,7 +127,9 @@ DIST_DEPS = {
         "patch_args": ["-p1"],
         "patches": [
             "//third_party/grpc:grpc_1.47.0.patch",
-            "//third_party/grpc:grpc_1.47.0.win_arm64.patch",
+            # Conflicts with out illumos changes (cares build modifications).
+            #"//third_party/grpc:grpc_1.47.0.win_arm64.patch",
+            "//third_party/grpc:grpc_1.47.0.illumos.patch",
         ],
         "used_in": [
             "additional_distfiles",
@@ -229,16 +236,19 @@ DIST_DEPS = {
         ],
     },
     "com_google_absl": {
-        "archive": "20230802.0.tar.gz",
-        "sha256": "59d2976af9d6ecf001a81a35749a6e551a335b949d34918cfade07737b9d93c5",
+        "archive": "2aa06d2a9a540c1a9da8590d307f01af72cbd8b6.tar.gz",
+        # Tried to do this with a patch but Bazel is buggy when it comes to patches where you need to modifications
+        # to the end of the file. It fails with: "Incorrect Chunk: the position of chunk > target size"
+        # See: https://github.com/bazelbuild/bazel/issues/17376
+        "sha256": "6e9effdfb977edaf3eec52992449fa3f41a9e3597530313b10e556be6977beff",
         "urls": [
-            "https://github.com/abseil/abseil-cpp/archive/refs/tags/20230802.0.tar.gz",
+            "https://github.com/abseil/abseil-cpp/archive/2aa06d2a9a540c1a9da8590d307f01af72cbd8b6.tar.gz",
         ],
         "used_in": [
             "additional_distfiles",
             "test_WORKSPACE_files",
         ],
-        "strip_prefix": "abseil-cpp-20230802.0",
+        "strip_prefix": "abseil-cpp-2aa06d2a9a540c1a9da8590d307f01af72cbd8b6",
     },
     "zstd-jni": {
         "archive": "v1.5.2-3.zip",

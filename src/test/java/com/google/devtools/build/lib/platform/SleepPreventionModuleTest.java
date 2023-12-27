@@ -33,6 +33,7 @@ public final class SleepPreventionModuleTest {
       case LINUX:
       case FREEBSD:
       case OPENBSD:
+      case ILLUMOS:
       case UNKNOWN:
         return false;
     }

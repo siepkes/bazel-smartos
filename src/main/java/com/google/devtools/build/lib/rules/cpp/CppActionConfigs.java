@@ -31,11 +31,14 @@ public class CppActionConfigs {
   /** A platform for C++ tool invocations. */
   public enum CppPlatform {
     LINUX,
+    ILLUMOS,
     MAC
   }
 
   /** A string constant for the macOS target libc value. */
   public static final String MACOS_TARGET_LIBC = "macosx";
+
+  public static final String ILLUMOS_TARGET_LIBC = "illumos";
 
   // Note: these features won't be added to the crosstools that defines no_legacy_features feature
   // (e.g. ndk, apple, enclave crosstools). Those need to be modified separately.
@@ -632,10 +635,13 @@ public class CppActionConfigs {
                         "    flag_group {",
                         ifLinux(platform, "flag: 'rcsD'"),
                         ifMac(platform, "flag: '-static'"),
+                        ifIllumos(platform, "flag: '-rcs'"),
+                        ifMac(platform, "flag: '-static'", "flag: '-s'"),
                         "    }",
                         "    flag_group {",
                         "      expand_if_all_available: 'output_execpath'",
                         ifLinux(platform, "flag: '%{output_execpath}'"),
+                        ifIllumos(platform, "flag: '%{output_execpath}'"),
                         ifMac(platform, "flag: '-o'", "flag: '%{output_execpath}'"),
                         "    }",
                         "  }",
@@ -691,6 +697,10 @@ public class CppActionConfigs {
                         "        flag: '-Wl,--start-lib'",
                         "      }",
                         ifLinux(
+                            // FIXME: The modification of `-whole-archive` and `-no-whole-archive` to start with a double dash (`--`)
+                            // is a hack to make it work on Illumos. We should actually configure `libc_target` to be 'ILLUMOS' so the
+                            // `ifIllumos()` method below gets triggered properly. However that turned out to be less straight forward
+                            // then hoped. Hence the quick and dirty hack.
                             platform,
                             "  flag_group {",
                             "    expand_if_true: 'libraries_to_link.is_whole_archive'",
@@ -698,7 +708,7 @@ public class CppActionConfigs {
                             "        variable: 'libraries_to_link.type'",
                             "        value: 'static_library'",
                             "    }",
-                            "    flag: '-Wl,-whole-archive'",
+                            "    flag: '-Wl,--whole-archive'",
                             "  }",
                             "  flag_group {",
                             "    expand_if_equal: {",
@@ -749,7 +759,7 @@ public class CppActionConfigs {
                             "        variable: 'libraries_to_link.type'",
                             "        value: 'static_library'",
                             "    }",
-                            "    flag: '-Wl,-no-whole-archive'",
+                            "    flag: '-Wl,--no-whole-archive'",
                             "  }"),
                         ifMac(
                             platform,
@@ -943,7 +953,11 @@ public class CppActionConfigs {
                         "    action: 'lto-index-for-executable'",
                         "    flag_group {",
                         "      expand_if_all_available: 'strip_debug_symbols'",
-                        "      flag: '-Wl,-S'",
+                        //ifLinux(platform, "      flag: '-Wl,-S'"),
+                        //ifMac(platform, "      flag: '-Wl,-S'"),
+                        // TODO: Figure out how to only strip debug symbols on Illumos.
+                        // 'zstrip-class' is not present on Illumos I think?
+                        //ifIllumos(platform, "      flag: '-Wl,zstrip-class=debug'"),
                         "    }",
                         "  }")));
       }
@@ -1592,6 +1606,10 @@ public class CppActionConfigs {
   private static String ifLinux(CppPlatform platform, String... lines) {
     // Platform `LINUX` also includes FreeBSD and OpenBSD.
     return ifTrue(platform == CppPlatform.LINUX, lines);
+  }
+
+  private static String ifIllumos(CppPlatform platform, String... lines) {
+    return ifTrue(platform == CppPlatform.ILLUMOS, lines);
   }
 
   private static String ifMac(CppPlatform platform, String... lines) {

@@ -187,6 +187,7 @@ def get_cpu_value(repository_ctx):
     """Compute the cpu_value based on the OS name. Doesn't %-escape the result!"""
     os_name = repository_ctx.os.name
     arch = repository_ctx.os.arch
+    auto_configure_warning_maybe(repository_ctx, "OS Name: " + str(os_name) + " ARCH value: " + str(arch))
     if os_name.startswith("mac os"):
         # Check if we are on x86_64 or arm64 and return the corresponding cpu value.
         return "darwin" + ("_arm64" if arch == "aarch64" else "")
@@ -194,6 +195,10 @@ def get_cpu_value(repository_ctx):
         return "freebsd"
     if os_name.find("openbsd") != -1:
         return "openbsd"
+    if os_name.find("sunos") != -1:
+        # os_name is 'sunos' on Illumos. I'm guessing this value comes from 'os.name' in Java since it can
+        # also be 'mac os'.
+        return "illumos"
     if os_name.find("windows") != -1:
         if arch == "aarch64":
             return "arm64_windows"
