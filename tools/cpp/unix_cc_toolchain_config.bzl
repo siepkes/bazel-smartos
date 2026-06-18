@@ -932,7 +932,11 @@ def _impl(ctx):
                 actions = all_link_actions + lto_index_actions,
                 flag_groups = [
                     flag_group(
-                        flags = ["-Wl,-S"],
+                        # Threaded from cc autoconf so it can vary by target OS:
+                        # GNU/Apple ld use -Wl,-S (strip debug only); illumos/Solaris
+                        # ld treats -S as taking an argument, so it needs -Wl,-s
+                        # (no-arg strip, accepted by all of them).
+                        flags = ctx.attr.strip_flags,
                         expand_if_available = "strip_debug_symbols",
                     ),
                 ],
@@ -972,7 +976,10 @@ def _impl(ctx):
 
     libraries_to_link_common_flag_groups = [
         flag_group(
-            flags = ["-Wl,-whole-archive"],
+            # Threaded per-OS from cc autoconf: GNU ld uses -Wl,-whole-archive;
+            # illumos/Solaris ld has no such option (it parses -whole-archive as
+            # bare -w) and uses -z allextract instead.
+            flags = ctx.attr.whole_archive_flags,
             expand_if_true =
                 "libraries_to_link.is_whole_archive",
             expand_if_equal = variable_with_value(
@@ -1024,7 +1031,8 @@ def _impl(ctx):
             ),
         ),
         flag_group(
-            flags = ["-Wl,-no-whole-archive"],
+            # illumos/Solaris ld counterpart of -Wl,-no-whole-archive.
+            flags = ctx.attr.no_whole_archive_flags,
             expand_if_true = "libraries_to_link.is_whole_archive",
             expand_if_equal = variable_with_value(
                 name = "libraries_to_link.type",
@@ -1689,6 +1697,9 @@ cc_toolchain_config = rule(
         "archive_flags": attr.string_list(),
         "link_libs": attr.string_list(),
         "opt_link_flags": attr.string_list(),
+        "strip_flags": attr.string_list(default = ["-Wl,-S"]),
+        "whole_archive_flags": attr.string_list(default = ["-Wl,-whole-archive"]),
+        "no_whole_archive_flags": attr.string_list(default = ["-Wl,-no-whole-archive"]),
         "unfiltered_compile_flags": attr.string_list(),
         "coverage_compile_flags": attr.string_list(),
         "coverage_link_flags": attr.string_list(),

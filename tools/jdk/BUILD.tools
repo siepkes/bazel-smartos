@@ -1,5 +1,6 @@
 package(default_visibility = ["//visibility:public"])
 
+load("@rules_java//toolchains:default_java_toolchain.bzl", "java_runtime_files")
 load("@rules_python//python:defs.bzl", "py_binary", "py_test")
 load(":launcher_flag_alias.bzl", "launcher_flag_alias")
 
@@ -188,6 +189,13 @@ TARGET_NAMES = [
     )
     for name in TARGET_NAMES
 ]
+
+# illumos isn't supported by upstream rules_java, so define the JNI header here.
+java_runtime_files(
+    name = "jni_md_header-illumos",
+    # OpenJDK doesn't make a distinction between Solaris and illumos (yet).
+    srcs = ["include/solaris/jni_md.h"],
+)
 
 #### Aliases to rules_java to keep backward-compatibility (end) ####
 

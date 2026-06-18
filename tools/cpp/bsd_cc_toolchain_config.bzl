@@ -105,7 +105,7 @@ def _impl(ctx):
                 actions = all_compile_actions,
                 flag_groups = [
                     flag_group(
-                        flags = [
+                        flags = [                       
                             "-no-canonical-prefixes",
                             "-Wno-builtin-macro-redefined",
                             "-D__DATE__=\"redacted\"",

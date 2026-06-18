@@ -461,6 +461,7 @@ public class GrpcServerImpl extends CommandServerGrpc.CommandServerImplBase impl
 
   private void writeServerStatusFiles(InetSocketAddress address) throws AbruptExitException {
     String addressString = InetAddresses.toUriString(address.getAddress()) + ":" + server.getPort();
+
     writeServerFile(PORT_FILE, addressString);
     writeServerFile(REQUEST_COOKIE_FILE, requestCookie);
     writeServerFile(RESPONSE_COOKIE_FILE, responseCookie);
@@ -600,6 +601,14 @@ public class GrpcServerImpl extends CommandServerGrpc.CommandServerImplBase impl
           BlazeCommandResult.detailedExitCode(
               InterruptedFailureDetails.detailedExitCode("Command dispatch interrupted"));
       commandId = ""; // The default value, the client will ignore it
+    } catch (Exception e) {
+      try {
+        java.nio.file.Files.write(java.nio.file.Paths.get("/tmp/bazel_exception.txt"), e.toString().getBytes());      
+      } catch (Exception e2) {
+        e2.printStackTrace();
+      }
+
+      throw e;
     }
     RunResponse.Builder response = RunResponse.newBuilder()
         .setCookie(responseCookie)

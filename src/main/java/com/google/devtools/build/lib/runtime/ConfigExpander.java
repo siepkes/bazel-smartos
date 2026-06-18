@@ -51,6 +51,8 @@ final class ConfigExpander {
         return "freebsd";
       case OPENBSD:
         return "openbsd";
+      case ILLUMOS:
+        return "illumos";        
       default:
         return OS.getCurrent().getCanonicalName();
     }

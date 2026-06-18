@@ -64,16 +64,16 @@ DIST_DEPS = {
     #
     ########################################
     "platforms": {
-        "archive": "platforms-0.0.8.tar.gz",
-        "sha256": "8150406605389ececb6da07cbcb509d5637a3ab9a24bc69b1101531367d89d74",
+        "archive": "platforms-0.0.10.tar.gz",
+        "sha256": "218efe8ee736d26a3572663b374a253c012b716d8af0c07e842e82f238a0a7ee",
         "urls": [
-            "https://mirror.bazel.build/github.com/bazelbuild/platforms/releases/download/0.0.8/platforms-0.0.8.tar.gz",
-            "https://github.com/bazelbuild/platforms/releases/download/0.0.8/platforms-0.0.8.tar.gz",
+            "https://mirror.bazel.build/github.com/bazelbuild/platforms/releases/download/0.0.10/platforms-0.0.10.tar.gz",
+            "https://github.com/bazelbuild/platforms/releases/download/0.0.10/platforms-0.0.10.tar.gz",
         ],
         "used_in": [
             "additional_distfiles",
         ],
-        "package_version": "0.0.8",
+        "package_version": "0.0.10",
     },
     "bazelci_rules": {
         "archive": "bazelci_rules-1.0.0.tar.gz",
@@ -92,14 +92,17 @@ DIST_DEPS = {
     # Used in src/main/java/com/google/devtools/build/lib/bazel/rules/java/jdk.WORKSPACE.
     # Used in src/test/java/com/google/devtools/build/lib/blackbox/framework/blackbox.WORKSAPCE
     "rules_cc": {
-        "archive": "rules_cc-0.0.9.tar.gz",
-        "sha256": "2037875b9a4456dce4a79d112a8ae885bbc4aad968e6587dca6e64f3a0900cdf",
-        "urls": ["https://github.com/bazelbuild/rules_cc/releases/download/0.0.9/rules_cc-0.0.9.tar.gz"],
+        "archive": "rules_cc-0.0.11.tar.gz",
+        "sha256": "7e2a1f6c5dd908e6e88d7c80257c99d14e16fa985b56342287fddb6a32c435b5",
+        "strip_prefix": "rules_cc-0.0.11",
+        "urls": [
+            "https://mirror.bazel.build/github.com/bazelbuild/rules_cc/releases/download/0.0.11/rules_cc-0.0.11.tar.gz",
+            "https://github.com/bazelbuild/rules_cc/releases/download/0.0.11/rules_cc-0.0.11.tar.gz",
+        ],
         "used_in": [
             "additional_distfiles",
         ],
-        "package_version": "0.0.9",
-        "strip_prefix": "rules_cc-0.0.9",
+        "package_version": "0.0.11",
     },
     "rules_java": {
         "aliases": [
@@ -167,7 +170,9 @@ DIST_DEPS = {
         "patch_args": ["-p1"],
         "patches": [
             "//third_party/grpc:grpc_1.48.1.patch",
-            "//third_party/grpc:grpc_1.48.1.win_arm64.patch",
+            # Conflicts with our illumos changes (cares build modifications).
+            #"//third_party/grpc:grpc_1.48.1.win_arm64.patch",
+            "//third_party/grpc:grpc_1.48.1.illumos.patch",
         ],
         "used_in": [
             "additional_distfiles",
@@ -273,21 +278,23 @@ DIST_DEPS = {
         ],
     },
     "com_google_absl": {
-        "archive": "20220623.1.tar.gz",
-        "sha256": "91ac87d30cc6d79f9ab974c51874a704de9c2647c40f6932597329a282217ba8",
+        # Canonical upstream. illumos support is added as an in-tree patch applied via
+        # single_version_override in MODULE.bazel (//third_party/abseil-cpp:abseil-cpp-20230125.1-illumos.patch).
+        "archive": "20230125.1.tar.gz",
+        "sha256": "81311c17599b3712069ded20cca09a62ab0bf2a89dfa16993786c8782b7ed145",
         "urls": [
-            "https://mirror.bazel.build/github.com/abseil/abseil-cpp/archive/refs/tags/20220623.1.tar.gz",
-            "https://github.com/abseil/abseil-cpp/archive/refs/tags/20220623.1.tar.gz",
+            "https://mirror.bazel.build/github.com/abseil/abseil-cpp/archive/refs/tags/20230125.1.tar.gz",
+            "https://github.com/abseil/abseil-cpp/archive/refs/tags/20230125.1.tar.gz",
         ],
         "used_in": [
             "additional_distfiles",
         ],
-        "strip_prefix": "abseil-cpp-20220623.1",
+        "strip_prefix": "abseil-cpp-20230125.1",
         "license_kinds": [
             "@rules_license//licenses/generic:notice",
         ],
         "license_text": "LICENSE",
-        "package_version": "20220623.1",
+        "package_version": "20230125.1",
     },
     "zstd-jni": {
         "archive": "v1.5.2-3.zip",

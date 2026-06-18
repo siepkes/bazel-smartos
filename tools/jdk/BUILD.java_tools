@@ -156,6 +156,68 @@ cc_binary(
     deps = [":ijar_cc_binary_main"],
 )
 
+config_setting(
+    name = "illumos",
+    constraint_values = ["@platforms//os:illumos"],
+    visibility = ["//visibility:public"],
+)
+
+alias(
+    name = "singlejar",
+    actual = select({
+        "//:remote": ":singlejar_cc_bin",
+        "//conditions:default": ":singlejar_prebuilt_or_cc_binary",
+    }),
+)
+
+alias(
+    name = "singlejar_prebuilt_or_cc_binary",
+    actual = select({
+        ":linux_x86_64": "java_tools/src/tools/singlejar/singlejar_local",
+        ":darwin_x86_64": "java_tools/src/tools/singlejar/singlejar_local",
+        ":darwin_arm64": "java_tools/src/tools/singlejar/singlejar_local",
+        ":darwin_arm64e": "java_tools/src/tools/singlejar/singlejar_local",
+        ":windows": "java_tools/src/tools/singlejar/singlejar_local.exe",
+        "//conditions:default": "singlejar_cc_bin",
+    }),
+)
+
+alias(
+    name = "prebuilt_singlejar",
+    actual = select({
+        ":windows": "java_tools/src/tools/singlejar/singlejar_local.exe",
+        "//conditions:default": "java_tools/src/tools/singlejar/singlejar_local",
+    }),
+)
+
+alias(
+    name = "ijar",
+    actual = select({
+        ":remote": ":ijar_cc_binary",
+        "//conditions:default": ":prebuilt_binary_or_cc_binary",
+    }),
+)
+
+alias(
+    name = "prebuilt_binary_or_cc_binary",
+    actual = select({
+        ":linux_x86_64": ":ijar_prebuilt_binary",
+        ":darwin_x86_64": ":ijar_prebuilt_binary",
+        ":darwin_arm64": ":ijar_prebuilt_binary",
+        ":darwin_arm64e": ":ijar_prebuilt_binary",
+        ":windows": ":ijar_prebuilt_binary",
+        "//conditions:default": ":ijar_cc_binary",
+    }),
+)
+
+filegroup(
+    name = "ijar_prebuilt_binary",
+    srcs = select({
+        ":windows": ["java_tools/ijar/ijar.exe"],
+        "//conditions:default": ["java_tools/ijar/ijar"],
+    }),
+)
+
 cc_library(
     name = "zip",
     srcs = [

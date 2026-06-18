@@ -1,0 +1,24 @@
+diff --git a/BUILD.bazel b/BUILD.bazel
+index 47d12e4..42e557c 100644
+--- a/BUILD.bazel
++++ b/BUILD.bazel
+@@ -10,6 +10,11 @@ config_setting(
+     constraint_values = ["@platforms//os:windows"],
+ )
+ 
++config_setting(
++    name = "illumos",
++    constraint_values = ["@platforms//os:illumos"],
++)
++
+ # Android is not officially supported through C++.
+ # This just helps with the build for now.
+ config_setting(
+@@ -54,6 +59,7 @@ copy_file(
+         ":darwin": "@com_github_grpc_grpc//third_party/cares:config_darwin/ares_config.h",
+         ":windows": "@com_github_grpc_grpc//third_party/cares:config_windows/ares_config.h",
+         ":android": "@com_github_grpc_grpc//third_party/cares:config_android/ares_config.h",
++        ":illumos": "@com_github_grpc_grpc//third_party/cares:config_illumos/ares_config.h",
+         "//conditions:default": "@com_github_grpc_grpc//third_party/cares:config_linux/ares_config.h",
+     }),
+     out = "ares_config.h",

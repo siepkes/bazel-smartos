@@ -25,7 +25,7 @@
 
 #include <cinttypes>
 
-#if defined(__linux__)
+#if defined(__linux__) || defined(__illumos__)
 #include <endian.h>
 #elif defined(__FreeBSD__) || defined(__OpenBSD__)
 #include <sys/endian.h>

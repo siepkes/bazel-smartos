@@ -462,14 +462,18 @@ def configure_unix_toolchain(repository_ctx, cpu_value, overriden_tools):
     if bin_search_flags and not darwin:
         force_linker_flags.extend(bin_search_flags)
     use_libcpp = darwin or bsd
-    is_as_needed_supported = _is_linker_option_supported(
+    # illumos/Solaris ld is not GNU ld: --no-as-needed / --push-state are
+    # rejected, and the trivial probe link in _is_linker_option_supported
+    # false-positives (it never exercises the as-needed path), so guard both.
+    is_sunos = repository_ctx.os.name.find("sunos") != -1
+    is_as_needed_supported = not is_sunos and _is_linker_option_supported(
         repository_ctx,
         cc,
         force_linker_flags,
         "-Wl,-no-as-needed",
         "-no-as-needed",
     )
-    is_push_state_supported = _is_linker_option_supported(
+    is_push_state_supported = not is_sunos and _is_linker_option_supported(
         repository_ctx,
         cc,
         force_linker_flags,
@@ -714,6 +718,17 @@ def configure_unix_toolchain(repository_ctx, cpu_value, overriden_tools):
                     "-Wl,--gc-sections",
                     "-gc-sections",
                 ),
+            ),
+            "%{strip_flags}": get_starlark_list(
+                # illumos/Solaris ld: -S takes an argument; it needs -s instead.
+                ["-Wl,-s"] if is_sunos else ["-Wl,-S"],
+            ),
+            "%{whole_archive_flags}": get_starlark_list(
+                # illumos/Solaris ld has no --whole-archive; use -z allextract.
+                ["-Wl,-z,allextract"] if is_sunos else ["-Wl,-whole-archive"],
+            ),
+            "%{no_whole_archive_flags}": get_starlark_list(
+                ["-Wl,-z,defaultextract"] if is_sunos else ["-Wl,-no-whole-archive"],
             ),
             "%{unfiltered_compile_flags}": get_starlark_list(
                 _get_no_canonical_prefixes_opt(repository_ctx, cc) + [

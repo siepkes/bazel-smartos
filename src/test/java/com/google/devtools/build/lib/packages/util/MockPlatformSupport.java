@@ -133,6 +133,10 @@ public class MockPlatformSupport {
         "constraint_value(",
         "    name = 'openbsd',",
         "    constraint_setting = ':os',",
+        ")",
+        "constraint_value(",
+        "    name = 'illumos',",
+        "    constraint_setting = ':os',",
         ")");
     mockToolsConfig.create(
         platformsPath + "/BUILD",

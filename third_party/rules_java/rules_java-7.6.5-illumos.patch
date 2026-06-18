@@ -1,0 +1,32 @@
+diff --git a/toolchains/BUILD b/toolchains/BUILD
+index 81126c2..b45822d 100644
+--- a/toolchains/BUILD
++++ b/toolchains/BUILD
+@@ -111,6 +111,11 @@ java_runtime_files(
+     srcs = ["include/openbsd/jni_md.h"],
+ )
+ 
++java_runtime_files(
++    name = "jni_md_header-illumos",
++    srcs = ["include/solaris/jni_md.h"],
++)
++
+ # The Java native interface. Depend on this package if you #include <jni.h>.
+ #
+ # See test_jni in third_party/bazel/src/test/shell/bazel/bazel_java_test.sh for
+@@ -122,6 +127,7 @@ cc_library(
+     hdrs = [":jni_header"] + select({
+         "@bazel_tools//src/conditions:darwin": [":jni_md_header-darwin"],
+         "@bazel_tools//src/conditions:freebsd": [":jni_md_header-freebsd"],
++        "@bazel_tools//src/conditions:illumos": [":jni_md_header-illumos"],
+         "@bazel_tools//src/conditions:linux_aarch64": [":jni_md_header-linux"],
+         "@bazel_tools//src/conditions:linux_mips64": [":jni_md_header-linux"],
+         "@bazel_tools//src/conditions:linux_ppc64le": [":jni_md_header-linux"],
+@@ -135,6 +141,7 @@ cc_library(
+     includes = ["include"] + select({
+         "@bazel_tools//src/conditions:darwin": ["include/darwin"],
+         "@bazel_tools//src/conditions:freebsd": ["include/freebsd"],
++        "@bazel_tools//src/conditions:illumos": ["include/solaris"],
+         "@bazel_tools//src/conditions:linux_aarch64": ["include/linux"],
+         "@bazel_tools//src/conditions:linux_mips64": [":include/linux"],
+         "@bazel_tools//src/conditions:linux_ppc64le": ["include/linux"],

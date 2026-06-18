@@ -35,7 +35,7 @@ public final class BazelMockCcSupport extends MockCcSupport {
   private BazelMockCcSupport() {}
 
   private static final ImmutableList<String> CROSSTOOL_ARCHS =
-      ImmutableList.of("piii", "k8", "armeabi-v7a", "ppc", "darwin_x86_64");
+      ImmutableList.of("piii", "k8", "armeabi-v7a", "ppc", "darwin_x86_64", "illumos");
 
   @Override
   protected String getRealFilesystemCrosstoolTopPath() {

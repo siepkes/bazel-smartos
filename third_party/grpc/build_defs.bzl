@@ -131,6 +131,7 @@ def _get_external_deps(external_deps):
 def grpc_cc_library(
         name,
         srcs = [],
+        defines = ["grpc_no_ares=true"],  # Our use case doesn't need ares.
         public_hdrs = [],
         hdrs = [],
         external_deps = [],
@@ -148,12 +149,21 @@ def grpc_cc_library(
                 "-std=c99",
                 "-Wimplicit-function-declaration",
             ],
+            "//src/conditions:illumos": [
+                # Needed for 'msg_control' in 'msghdr'.
+                "-D_XOPEN_SOURCE=600",
+                # Needed for 'IPV6_V6ONLY' in 'in.h'.
+                "-D__EXTENSIONS__",
+                # Must be c99 otherwise 'feature_tests.h' will complain.
+                "-std=c99",
+                "-Wimplicit-function-declaration",
+            ],            
             ":windows": ["/we4013"],
         })
     cc_library(
         name = name,
         srcs = srcs,
-        defines = ["GRPC_ARES=0"],  # Our use case doesn't need ares.
+        defines = ["grpc_no_ares=true"],  # Our use case doesn't need ares.
         hdrs = hdrs + public_hdrs,
         deps = deps + _get_external_deps(external_deps),
         copts = copts,

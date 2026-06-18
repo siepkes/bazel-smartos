@@ -43,6 +43,8 @@ public class AutoCpuConverter extends Converter.Contextless<String> {
           }
         case FREEBSD:
           return "freebsd";
+        case ILLUMOS:
+          return "illumos";          
         case OPENBSD:
           return "openbsd";
         case WINDOWS:

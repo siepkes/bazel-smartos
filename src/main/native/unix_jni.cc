@@ -693,6 +693,7 @@ static jobject NewDirents(JNIEnv *env,
 static char GetDirentType(struct dirent *entry,
                           int dirfd,
                           bool follow_symlinks) {
+#ifdef _DIRENT_HAVE_D_TYPE
   switch (entry->d_type) {
     case DT_REG:
       return 'f';
@@ -704,16 +705,19 @@ static char GetDirentType(struct dirent *entry,
       }
       FALLTHROUGH_INTENDED;
     case DT_UNKNOWN:
+#endif
       portable_stat_struct statbuf;
       if (portable_fstatat(dirfd, entry->d_name, &statbuf, 0) == 0) {
         if (S_ISREG(statbuf.st_mode)) return 'f';
         if (S_ISDIR(statbuf.st_mode)) return 'd';
       }
+#ifdef _DIRENT_HAVE_D_TYPE
       // stat failed or returned something weird; fall through
       FALLTHROUGH_INTENDED;
     default:
       return '?';
   }
+#endif
 }
 }  // namespace
 
@@ -1021,12 +1025,14 @@ static int ForceDelete(JNIEnv* env, const std::vector<std::string>& dir_path,
 // posts an exception.
 static int IsSubdir(JNIEnv* env, const std::vector<std::string>& dir_path,
                     const int dir_fd, const struct dirent* de, bool* is_dir) {
+#ifdef _DIRENT_HAVE_D_TYPE
   switch (de->d_type) {
     case DT_DIR:
       *is_dir = true;
       return 0;
 
     case DT_UNKNOWN: {
+#endif
       struct stat st;
       if (fstatat(dir_fd, de->d_name, &st, AT_SYMLINK_NOFOLLOW) == -1) {
         if (errno == ENOENT) {
@@ -1039,12 +1045,14 @@ static int IsSubdir(JNIEnv* env, const std::vector<std::string>& dir_path,
       }
       *is_dir = st.st_mode & S_IFDIR;
       return 0;
+#ifdef _DIRENT_HAVE_D_TYPE      
     }
 
     default:
       *is_dir = false;
       return 0;
   }
+#endif  
 }
 
 // Recursively deletes all trees under the given path.

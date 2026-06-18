@@ -47,6 +47,11 @@ public final class ConstraintConstants {
                   OS_CONSTRAINT_SETTING,
                   Label.parseCanonicalUnchecked("@platforms//os:freebsd")))
           .put(
+              OS.ILLUMOS,
+              ConstraintValueInfo.create(
+                  OS_CONSTRAINT_SETTING,
+                  Label.parseCanonicalUnchecked("@platforms//os:illumos")))
+          .put(
               OS.OPENBSD,
               ConstraintValueInfo.create(
                   OS_CONSTRAINT_SETTING,

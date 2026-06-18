@@ -1,0 +1,19 @@
+diff --git a/private/parse.bzl b/private/parse.bzl
+index 19c7d8a..d52779a 100644
+--- a/private/parse.bzl
++++ b/private/parse.bzl
+@@ -24,8 +24,12 @@ def parse_version(v):
+       a triple ([major, minor, patch], is_released, prerelease)
+     """
+     if not v:
+-        # An empty string is treated as a "dev version", which is greater than anything.
+-        v = "999999.999999.999999"
++        # A Bazel built from source without an embedded version (the bootstrap
++        # Bazel that builds this tree) reports an empty version. Treat it as
++        # 7.7.1 (this tree's version) rather than a dev build newer than
++        # everything, which would enable Bazel 8+ globals such as `macro` that
++        # this Bazel does not have and fail at load time.
++        v = "7.7.1"
+     release, prerelease = _partition(v.partition(" ")[0])
+     segments = release.split(".")
+     if len(segments) != 3:
