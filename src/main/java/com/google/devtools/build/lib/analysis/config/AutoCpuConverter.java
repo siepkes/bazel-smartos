@@ -39,6 +39,7 @@ public class AutoCpuConverter extends Converter.Contextless<String> {
               default -> "unknown";
             };
         case FREEBSD -> "freebsd";
+        case ILLUMOS -> "illumos";
         case OPENBSD -> "openbsd";
         case WINDOWS ->
             switch (CPU.getCurrent()) {

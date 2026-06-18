@@ -11,6 +11,7 @@ filegroup(
     srcs = glob(["**"]) + [
         "//third_party/allocation_instrumenter:srcs",
         "//third_party/android_dex:srcs",
+        "//third_party/c-ares:srcs",
         "//third_party/chicory:srcs",
         "//third_party/def_parser:srcs",
         "//third_party/googleapis:srcs",
@@ -27,6 +28,7 @@ filegroup(
         "//third_party/java/jcommander:srcs",
         "//third_party/java/proguard:srcs",
         "//third_party/pprof:srcs",
+        "//third_party/platforms:srcs",
         "//third_party/protobuf:srcs",
         "//third_party/py/abseil:srcs",
         "//third_party/py/concurrent:srcs",
@@ -35,6 +37,9 @@ filegroup(
         "//third_party/py/mock:srcs",
         "//third_party/py/six:srcs",
         "//third_party/remoteapis:srcs",
+        "//third_party/rules_cc:srcs",
+        "//third_party/rules_go:srcs",
+        "//third_party/rules_java:srcs",
     ],
 )
 
@@ -528,6 +533,7 @@ UNNECESSARY_DYNAMIC_LIBRARIES = select({
     "//src/conditions:linux_ppc": "*.so *.jnilib *.dll",
     "//src/conditions:freebsd": "*.so *.jnilib *.dll",
     "//src/conditions:openbsd": "*.so *.jnilib *.dll",
+    "//src/conditions:illumos": "*.so *.jnilib *.dll",
     # Default is to play it safe -- better have a big binary than a slow binary
     #   The empty string means nothing is to be removed from the library;
     #   the rule command tests for the empty string explictly to avoid
@@ -749,6 +755,11 @@ config_setting(
 config_setting(
     name = "openbsd",
     values = {"host_cpu": "openbsd"},
+)
+
+config_setting(
+    name = "illumos",
+    values = {"host_cpu": "illumos"},
 )
 
 config_setting(

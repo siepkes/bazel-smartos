@@ -31,11 +31,14 @@ public class CppActionConfigs {
   /** A platform for C++ tool invocations. */
   public enum CppPlatform {
     LINUX,
+    ILLUMOS,
     MAC
   }
 
   /** A string constant for the macOS target libc value. */
   public static final String MACOS_TARGET_LIBC = "macosx";
+
+  public static final String ILLUMOS_TARGET_LIBC = "illumos";
 
   // Note: these features won't be added to the crosstools that defines no_legacy_features feature
   // (e.g. ndk, apple, enclave crosstools). Those need to be modified separately.
@@ -686,7 +689,9 @@ public class CppActionConfigs {
                             "        variable: 'libraries_to_link.type'",
                             "        value: 'static_library'",
                             "    }",
-                            "    flag: '-Wl,-whole-archive'",
+                            // Illumos' ld wants the GNU-style double-dash form; Linux/BSD use the single dash.
+                            ifTrue(platform == CppPlatform.LINUX, "    flag: '-Wl,-whole-archive'"),
+                            ifIllumos(platform, "    flag: '-Wl,--whole-archive'"),
                             "  }",
                             "  flag_group {",
                             "    expand_if_equal: {",
@@ -737,7 +742,8 @@ public class CppActionConfigs {
                             "        variable: 'libraries_to_link.type'",
                             "        value: 'static_library'",
                             "    }",
-                            "    flag: '-Wl,-no-whole-archive'",
+                            ifTrue(platform == CppPlatform.LINUX, "    flag: '-Wl,-no-whole-archive'"),
+                            ifIllumos(platform, "    flag: '-Wl,--no-whole-archive'"),
                             "  }"),
                         // macOS mirrors the linux behavior above with the following exceptions:
                         // - The -Wl,-whole-archive flags are excluded, as they are not supported on
@@ -939,7 +945,8 @@ public class CppActionConfigs {
                         "    action: 'lto-index-for-nodeps-dynamic-library'",
                         "    flag_group {",
                         "      expand_if_all_available: 'strip_debug_symbols'",
-                        "      flag: '-Wl,-S'",
+                        // Illumos' ld doesn't support -Wl,-S; restore it for Linux/BSD/Mac only.
+                        ifTrue(platform != CppPlatform.ILLUMOS, "      flag: '-Wl,-S'"),
                         "    }",
                         "  }")));
       }
@@ -1580,8 +1587,14 @@ public class CppActionConfigs {
   }
 
   private static String ifLinux(CppPlatform platform, String... lines) {
-    // Platform `LINUX` also includes FreeBSD and OpenBSD.
-    return ifTrue(platform == CppPlatform.LINUX, lines);
+    // Platform `LINUX` also covers FreeBSD, OpenBSD, and Illumos: they share the
+    // GNU-style toolchain flags. The few Illumos-specific differences (whole-archive
+    // dash style, strip) are handled with explicit platform checks at their call sites.
+    return ifTrue(platform == CppPlatform.LINUX || platform == CppPlatform.ILLUMOS, lines);
+  }
+
+  private static String ifIllumos(CppPlatform platform, String... lines) {
+    return ifTrue(platform == CppPlatform.ILLUMOS, lines);
   }
 
   private static String ifMac(CppPlatform platform, String... lines) {

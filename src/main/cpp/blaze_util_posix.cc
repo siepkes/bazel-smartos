@@ -38,6 +38,9 @@
 #include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
+#if defined(__illumos__)
+#include <sys/termios.h> // TIOCGWINSZ
+#endif
 
 #include <algorithm>
 #include <cassert>
@@ -680,6 +683,9 @@ static string ReadOwnerInformation(int fd, const string& name) {
 static void WriteOwnerInformation(int fd) {
   (void)ftruncate(fd, 0);
   lseek(fd, 0, SEEK_SET);
+#if defined(__illumos__)
+// TODO: Implement for Illumos. Illumos does not support dprintf (POSIX 2008).
+#else
   // Locking is advisory, so it doesn't matter that this may overflow the
   // locked range.
   dprintf(fd, "pid=%d\nowner=client\n", getpid());
@@ -689,6 +695,7 @@ static void WriteOwnerInformation(int fd) {
   if (tty != nullptr) {
     dprintf(fd, "tty=%s\n", tty);
   }
+#endif
 }
 
 std::pair<LockHandle, DurationMillis> AcquireLock(const std::string& name,
@@ -897,7 +904,9 @@ static bool UnlimitResource(const int resource, const bool allow_infinity) {
 bool UnlimitResources() {
   bool success = true;
   success &= UnlimitResource(RLIMIT_NOFILE, false);
+#if defined(RLIMIT_NPROC)
   success &= UnlimitResource(RLIMIT_NPROC, false);
+#endif
   return success;
 }
 

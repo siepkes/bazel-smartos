@@ -1,0 +1,13 @@
+diff --git a/go/private/sdk.bzl b/go/private/sdk.bzl
+index c15cb7d..cf0c35d 100644
+--- a/go/private/sdk.bzl
++++ b/go/private/sdk.bzl
+@@ -535,6 +535,8 @@ def detect_host_platform(ctx):
+         goos = "darwin"
+     elif goos.startswith("windows"):
+         goos = "windows"
++    elif goos == "sunos":
++        goos = "illumos"
+ 
+     goarch = ctx.os.arch
+     if goarch == "aarch64":

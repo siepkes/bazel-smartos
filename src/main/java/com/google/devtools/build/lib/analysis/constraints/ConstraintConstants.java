@@ -52,6 +52,10 @@ public final class ConstraintConstants {
           ConstraintValueInfo.create(
               OS_CONSTRAINT_SETTING,
               Label.parseCanonicalUnchecked("@platforms//os:openbsd")),
+          OS.ILLUMOS,
+          ConstraintValueInfo.create(
+              OS_CONSTRAINT_SETTING,
+              Label.parseCanonicalUnchecked("@platforms//os:illumos")),
           OS.UNKNOWN,
           ConstraintValueInfo.create(
               OS_CONSTRAINT_SETTING,
